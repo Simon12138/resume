@@ -17,7 +17,7 @@ router.post('/resume', (req, res) => {
         message: '请先登录'
       });
     }
-
+    console.log('user create resume: ', req.session.user);
     const resumeData = req.body;
     
     // 调用简历服务创建简历
@@ -47,7 +47,7 @@ router.get('/resume/:id', (req, res) => {
         message: '请先登录'
       });
     }
-
+    console.log('user get resume: ', req.session.user);
     const { id } = req.params;
     
     // 调用简历服务获取简历
@@ -79,6 +79,7 @@ router.put('/resume/:id', (req, res) => {
         message: '请先登录'
       });
     }
+    console.log('user update resume: ', req.session.user);
     // 调用简历服务更新简历
     const result = resumeService.updateResume(id, updateData);
     
@@ -112,6 +113,7 @@ router.delete('/resume/:id', (req, res) => {
         message: '请先登录'
       });
     }
+    console.log('user delete resume: ', req.session.user);
     // 调用简历服务删除简历
     const result = resumeService.deleteResume(id);
     
@@ -140,7 +142,7 @@ router.post('/resume/render', (req, res) => {
         message: '请先登录'
       });
     }
-    
+    console.log('user render resume: ', req.session.user);
     // 检查用户是否为VIP
     const user = req.session.user;
     if (!user.isVip && templateId.startsWith('vip')) {
@@ -238,7 +240,7 @@ router.post('/resume/optimize', async (req, res) => {
         message: '请先登录'
       });
     }
-    
+    console.log('user optimize resume: ', req.session.user);
     // 检查用户是否为VIP
     const user = req.session.user;
     if (!user.isVip) {
@@ -616,7 +618,7 @@ router.get('/resume/:resumeId/download/:generatedId', async (req, res) => {
 router.post('/register', async (req, res) => {
   try {
     const { username, phone, password } = req.body;
-    
+    console.log('user register: ', phone);
     // 基本验证
     if (!username || !phone || !password) {
       return res.status(400).json({
@@ -672,7 +674,7 @@ router.post('/login', async (req, res) => {
     
     // 验证用户
     const user = await userService.validateUser(username, password);
-    
+    console.log('user login: ', user);
     if (user) {
       // 将用户信息存储在会话中
       req.session.user = user;
@@ -706,7 +708,7 @@ router.post('/templates/generate', async (req, res) => {
         message: '请先登录'
       });
     }
-    
+    console.log('user generate templates: ', req.session.user);
     // 检查用户是否为VIP
     const user = req.session.user;
     if (!user.isVip) {
