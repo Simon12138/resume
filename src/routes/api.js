@@ -6,18 +6,11 @@ const qwenService = require('../services/qwenService');
 const renderService = require('../services/renderService');
 const pdfService = require('../services/pdfService');
 const userService = require('../services/userService');
+const pdfParseService = require('../services/pdfParseService');
 
 // 创建简历
 router.post('/resume', (req, res) => {
   try {
-    // 检查用户是否登录
-    if (!req.session || !req.session.user) {
-      return res.status(401).json({
-        success: false,
-        message: '请先登录'
-      });
-    }
-    console.log('user create resume: ', req.session.user);
     const resumeData = req.body;
     
     // 调用简历服务创建简历
@@ -40,14 +33,6 @@ router.post('/resume', (req, res) => {
 // 获取简历
 router.get('/resume/:id', (req, res) => {
   try {
-    // 检查用户是否登录
-    if (!req.session || !req.session.user) {
-      return res.status(401).json({
-        success: false,
-        message: '请先登录'
-      });
-    }
-    console.log('user get resume: ', req.session.user);
     const { id } = req.params;
     
     // 调用简历服务获取简历
@@ -72,14 +57,7 @@ router.put('/resume/:id', (req, res) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
-    // 检查用户是否登录
-    if (!req.session || !req.session.user) {
-      return res.status(401).json({
-        success: false,
-        message: '请先登录'
-      });
-    }
-    console.log('user update resume: ', req.session.user);
+    
     // 调用简历服务更新简历
     const result = resumeService.updateResume(id, updateData);
     
@@ -106,14 +84,7 @@ router.put('/resume/:id', (req, res) => {
 router.delete('/resume/:id', (req, res) => {
   try {
     const { id } = req.params;
-    // 检查用户是否登录
-    if (!req.session || !req.session.user) {
-      return res.status(401).json({
-        success: false,
-        message: '请先登录'
-      });
-    }
-    console.log('user delete resume: ', req.session.user);
+    
     // 调用简历服务删除简历
     const result = resumeService.deleteResume(id);
     
@@ -135,22 +106,6 @@ router.delete('/resume/:id', (req, res) => {
 router.post('/resume/render', (req, res) => {
   try {
     const { templateId, data } = req.body;
-    // 检查用户是否登录
-    if (!req.session || !req.session.user) {
-      return res.status(401).json({
-        success: false,
-        message: '请先登录'
-      });
-    }
-    console.log('user render resume: ', req.session.user);
-    // 检查用户是否为VIP
-    const user = req.session.user;
-    if (!user.isVip && templateId.startsWith('vip')) {
-      return res.status(403).json({
-        success: false,
-        message: '该功能仅限VIP用户使用，请购买VIP以解锁此功能'
-      });
-    }
     
     if (!templateId) {
       return res.status(400).json({
@@ -228,28 +183,55 @@ router.post('/resume/parse', async (req, res) => {
   }
 });
 
+// 解析PDF简历接口
+router.post('/resume/parse-pdf', async (req, res) => {
+  try {
+    if (!req.files || !req.files.pdf) {
+      return res.status(400).json({
+        success: false,
+        message: '请上传PDF文件'
+      });
+    }
+
+    const pdfFile = req.files.pdf;
+    
+    // 检查文件类型
+    if (pdfFile.mimetype !== 'application/pdf') {
+      return res.status(400).json({
+        success: false,
+        message: '请上传有效的PDF文件'
+      });
+    }
+    
+    // 解析PDF文本
+    const parseResult = await pdfParseService.extractText(pdfFile.data);
+    
+    if (parseResult.success) {
+      res.json({
+        success: true,
+        message: 'PDF解析成功',
+        text: parseResult.data
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'PDF解析失败: ' + parseResult.message
+      });
+    }
+  } catch (error) {
+    console.error('解析PDF简历失败:', error);
+    res.status(500).json({
+      success: false,
+      message: '解析PDF简历失败: ' + error.message
+    });
+  }
+});
+
 // 优化简历内容（全局接口，不依赖特定简历ID）
 router.post('/resume/optimize', async (req, res) => {
   try {
     const { text, prompt } = req.body;
     
-    // 检查用户是否登录
-    if (!req.session || !req.session.user) {
-      return res.status(401).json({
-        success: false,
-        message: '请先登录'
-      });
-    }
-    console.log('user optimize resume: ', req.session.user);
-    // 检查用户是否为VIP
-    const user = req.session.user;
-    if (!user.isVip) {
-      return res.status(403).json({
-        success: false,
-        message: '该功能仅限VIP用户使用，请购买VIP以解锁此功能'
-      });
-    }
-
     if (!text || typeof text !== 'string') {
       return res.status(400).json({
         success: false,
@@ -618,7 +600,7 @@ router.get('/resume/:resumeId/download/:generatedId', async (req, res) => {
 router.post('/register', async (req, res) => {
   try {
     const { username, phone, password } = req.body;
-    console.log('user register: ', phone);
+    
     // 基本验证
     if (!username || !phone || !password) {
       return res.status(400).json({
@@ -674,7 +656,7 @@ router.post('/login', async (req, res) => {
     
     // 验证用户
     const user = await userService.validateUser(username, password);
-    console.log('user login: ', user);
+    
     if (user) {
       // 将用户信息存储在会话中
       req.session.user = user;
@@ -694,75 +676,6 @@ router.post('/login', async (req, res) => {
     res.status(500).json({
       success: false,
       message: '登录过程中发生错误'
-    });
-  }
-});
-
-// 生成AI模板
-router.post('/templates/generate', async (req, res) => {
-  try {
-    // 检查用户是否登录
-    if (!req.session || !req.session.user) {
-      return res.status(401).json({
-        success: false,
-        message: '请先登录'
-      });
-    }
-    console.log('user generate templates: ', req.session.user);
-    // 检查用户是否为VIP
-    const user = req.session.user;
-    if (!user.isVip) {
-      return res.status(403).json({
-        success: false,
-        message: '该功能仅限VIP用户使用，请购买VIP以解锁此功能'
-      });
-    }
-    
-    const { description } = req.body;
-    
-    if (!description) {
-      return res.status(400).json({
-        success: false,
-        message: '模板描述不能为空'
-      });
-    }
-    
-    // 检查描述长度
-    if (description.length < 10) {
-      return res.status(400).json({
-        success: false,
-        message: '模板描述至少需要10个字符'
-      });
-    }
-    
-    // 限制描述长度
-    if (description.length > 500) {
-      return res.status(400).json({
-        success: false,
-        message: '模板描述不能超过500个字符'
-      });
-    }
-    
-    // 调用服务生成模板
-    const result = await templateService.generateTemplate(description, user.username);
-    
-    if (result.success) {
-      res.json({
-        success: true,
-        message: '模板生成成功',
-        data: result.data
-      });
-    } else {
-      res.status(500).json({
-        success: false,
-        message: result.message || '生成模板失败'
-      });
-    }
-  } catch (error) {
-    console.error('生成模板失败:', error);
-    res.status(500).json({
-      success: false,
-      message: '生成模板过程中发生错误: ' + error.message
     });
   }
 });

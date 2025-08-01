@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{name}}的简历</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+        
+        :root {
+            --black: #000000;
+            --dark-gray: #333333;
+            --medium-gray: #666666;
+            --light-gray: #f0f0f0;
+            --white: #ffffff;
+            --border-color: #e0e0e0;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 32px;
+            --spacing-xl: 48px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', 'Microsoft YaHei', sans-serif;
+            line-height: 1.8;
+            color: var(--dark-gray);
+            background-color: var(--white);
+            padding: 0;
+        }
+        
+        .resume-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--white);
+        }
+        
+        .header {
+            padding: var(--spacing-xl) var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-xs);
+            color: var(--black);
+            letter-spacing: -1px;
+        }
+        
+        .job-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 22px;
+            font-weight: 400;
+            color: var(--medium-gray);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+            font-size: 16px;
+        }
+        
+        .contact-info span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .contact-info span:before {
+            content: "●";
+            color: var(--black);
+            font-size: 8px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg);
+        }
+        
+        .section {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--black);
+            margin-bottom: var(--spacing-md);
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .section-title:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--black);
+        }
+        
+        .summary-content {
+            font-size: 16px;
+            line-height: 1.9;
+            color: var(--medium-gray);
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .timeline-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: var(--spacing-xs);
+        }
+        
+        .company {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 19px;
+            color: var(--black);
+        }
+        
+        .date {
+            color: var(--medium-gray);
+            font-size: 15px;
+        }
+        
+        .position {
+            color: var(--medium-gray);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        
+        ul {
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        li:before {
+            content: "-";
+            position: absolute;
+            left: -15px;
+            top: 0;
+            font-weight: bold;
+        }
+        
+        .skills-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .skill-item {
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .education-item .degree {
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        
+        .project-item {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .project-name {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                padding: var(--spacing-md);
+                gap: var(--spacing-md);
+            }
+            
+            .header {
+                padding: var(--spacing-lg) var(--spacing-md);
+            }
+            
+            .name {
+                font-size: 36px;
+            }
+            
+            .contact-info {
+                flex-direction: column;
+                gap: var(--spacing-xs);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-container">
+        <div class="header">
+            <h1 class="name">{{name}}</h1>
+            {{#if jobTitle}}
+            <div class="job-title">{{jobTitle}}</div>
+            {{/if}}
+            <div class="contact-info">
+                {{#if phone}}
+                <span>{{phone}}</span>
+                {{/if}}
+                {{#if email}}
+                <span>{{email}}</span>
+                {{/if}}
+                {{#if location}}
+                <span>{{location}}</span>
+                {{/if}}
+                {{#if website}}
+                <span>{{website}}</span>
+                {{/if}}
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="content-left">
+                {{#if summary}}
+                <section class="section">
+                    <h2 class="section-title">个人简介</h2>
+                    <div class="summary-content">
+                        <p>{{summary}}</p>
+                    </div>
+                </section>
+                {{/if}}
+                
+                {{#if experience.length}}
+                <section class="section">
+                    <h2 class="section-title">工作经历</h2>
+                    {{#each experience}}
+                    <div class="timeline-item">
+                        <div class="item-header">
+                            <span class="company">{{company}}</span>
+                            <span class="date">{{startDate}} - {{endDate}}</span>
+                        </div>
+                        <div class="position">{{position}}</div>
+                        <ul>
+                            {{#each responsibilities}}
+                            <li>{{this}}</li>
+                            {{/each}}
+                        </ul>
+                    </div>
+                    {{/each}}
+                </section>
+                {{/if}}
+                
+                {{#if projects.length}}
+                <section class="section">
+                    <h2 class="section-title">项目经验</h2>
+                    {{#each projects}}
+                    <div class="project-item">
+                        <div class="project-name">{{name}}</div>
+                        <p>{{description}}</p>
+                    </div>
+                    {{/each}}
+                </section>
+                {{/if}}
+            </div>
+            
+            <div class="content-right">
+                {{#if education.length}}
+                <section class="section">
+                    <h2 class="section-title">教育背景</h2>
+                    {{#each education}}
+                    <div class="timeline-item education-item">
+                        <div class="item-header">
+                            <span class="company">{{school}}</span>
+                            <span class="date">{{startDate}} - {{endDate}}</span>
+                        </div>
+                        <div class="degree">{{degree}} - {{major}}</div>
+                    </div>
+                    {{/each}}
+                </section>
+                {{/if}}
+                
+                {{#if skills.length}}
+                <section class="section">
+                    <h2 class="section-title">技能专长</h2>
+                    <div class="skills-content">
+                        {{#each skills}}
+                        <span class="skill-item">{{this}}</span>
+                        {{/each}}
+                    </div>
+                </section>
+                {{/if}}
+                
+                {{#if languages.length}}
+                <section class="section">
+                    <h2 class="section-title">语言能力</h2>
+                    <ul>
+                        {{#each languages}}
+                        <li>{{language}}: {{proficiency}}</li>
+                        {{/each}}
+                    </ul>
+                </section>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

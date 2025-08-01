@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{name}}的简历</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #fff;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .personal-info h1 {
+            font-size: 32px;
+            margin: 0 0 5px 0;
+            color: #222;
+            font-weight: 300;
+        }
+        
+        .job-title {
+            font-size: 18px;
+            color: #666;
+            margin: 0 0 15px 0;
+        }
+        
+        .contact-info {
+            text-align: right;
+            font-size: 14px;
+        }
+        
+        .contact-info div {
+            margin-bottom: 5px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #222;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .experience-item {
+            margin-bottom: 20px;
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .company {
+            font-weight: bold;
+        }
+        
+        .date {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .position {
+            color: #444;
+            margin-bottom: 8px;
+        }
+        
+        ul {
+            padding-left: 18px;
+            margin: 10px 0;
+        }
+        
+        li {
+            margin-bottom: 4px;
+        }
+        
+        .education-item {
+            margin-bottom: 15px;
+        }
+        
+        .skills-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .skills-content span {
+            background: #f5f5f5;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        @media print {
+            body {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="personal-info">
+            <h1>{{name}}</h1>
+            {{#if jobTitle}}
+            <div class="job-title">{{jobTitle}}</div>
+            {{/if}}
+        </div>
+        <div class="contact-info">
+            {{#if phone}}
+            <div>📞 {{phone}}</div>
+            {{/if}}
+            {{#if email}}
+            <div>✉️ {{email}}</div>
+            {{/if}}
+            {{#if address}}
+            <div>📍 {{address}}</div>
+            {{/if}}
+        </div>
+    </div>
+    
+    {{#if summary}}
+    <section class="section">
+        <h2 class="section-title">个人简介</h2>
+        <p>{{summary}}</p>
+    </section>
+    {{/if}}
+    
+    {{#if workExperience.length}}
+    <section class="section">
+        <h2 class="section-title">工作经历</h2>
+        {{#each workExperience}}
+        <div class="experience-item">
+            <div class="item-header">
+                <span class="company">{{company}}</span>
+                <span class="date">{{startDate}} - {{endDate}}</span>
+            </div>
+            <div class="position">{{position}}</div>
+            {{#if responsibilities}}
+            <ul>
+                {{#each responsibilities}}
+                <li>{{this}}</li>
+                {{/each}}
+            </ul>
+            {{/if}}
+        </div>
+        {{/each}}
+    </section>
+    {{/if}}
+    
+    {{#if education.length}}
+    <section class="section">
+        <h2 class="section-title">教育背景</h2>
+        {{#each education}}
+        <div class="education-item">
+            <div class="item-header">
+                <span class="company">{{school}}</span>
+                <span class="date">{{startDate}} - {{endDate}}</span>
+            </div>
+            <div>{{degree}} - {{major}}</div>
+        </div>
+        {{/each}}
+    </section>
+    {{/if}}
+    
+    {{#if skills.length}}
+    <section class="section">
+        <h2 class="section-title">技能专长</h2>
+        <div class="skills-content">
+            {{#each skills}}
+            <span>{{this}}</span>
+            {{/each}}
+        </div>
+    </section>
+    {{/if}}
+    
+    {{#if projects.length}}
+    <section class="section">
+        <h2 class="section-title">项目经验</h2>
+        {{#each projects}}
+        <div class="experience-item">
+            <div class="item-header">
+                <span class="company">{{name}}</span>
+            </div>
+            <p>{{description}}</p>
+        </div>
+        {{/each}}
+    </section>
+    {{/if}}
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{name}}的简历</title>
+    <style>
+        body {
+            font-family: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #444;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .resume-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+            color: white;
+            padding: 40px 30px;
+        }
+        
+        .main-content {
+            padding: 40px 30px;
+        }
+        
+        .name {
+            font-size: 36px;
+            margin: 0 0 10px 0;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .job-title {
+            font-size: 18px;
+            color: #ecf0f1;
+            margin: 0 0 30px 0;
+            font-weight: 300;
+        }
+        
+        .contact-item {
+            margin-bottom: 20px;
+        }
+        
+        .contact-item h3 {
+            font-size: 16px;
+            margin: 0 0 5px 0;
+            color: #bdc3c7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .contact-item p {
+            margin: 0;
+            font-size: 14px;
+        }
+        
+        .skills-section h3 {
+            font-size: 16px;
+            margin: 0 0 15px 0;
+            color: #bdc3c7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .skill-item {
+            margin-bottom: 15px;
+        }
+        
+        .skill-name {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .skill-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .skill-level {
+            height: 100%;
+            background: white;
+            border-radius: 3px;
+        }
+        
+        .section {
+            margin-bottom: 35px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: #3498db;
+        }
+        
+        .experience-item, .education-item {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .experience-item:last-child, .education-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .company {
+            font-weight: bold;
+            font-size: 18px;
+            color: #2c3e50;
+        }
+        
+        .date {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .position {
+            color: #3498db;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        ul {
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+        
+        li {
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .resume-container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .resume-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-container">
+        <div class="sidebar">
+            <h1 class="name">{{name}}</h1>
+            {{#if jobTitle}}
+            <div class="job-title">{{jobTitle}}</div>
+            {{/if}}
+            
+            <div class="contact-item">
+                <h3>联系方式</h3>
+                {{#if phone}}
+                <p>📞 {{phone}}</p>
+                {{/if}}
+                {{#if email}}
+                <p>✉️ {{email}}</p>
+                {{/if}}
+                {{#if address}}
+                <p>📍 {{address}}</p>
+                {{/if}}
+            </div>
+            
+            {{#if skills.length}}
+            <div class="skills-section">
+                <h3>技能专长</h3>
+                {{#each skills}}
+                <div class="skill-item">
+                    <div class="skill-name">{{this}}</div>
+                    <div class="skill-bar">
+                        <div class="skill-level" style="width: {{random 60 100}}%"></div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            {{/if}}
+        </div>
+        
+        <div class="main-content">
+            {{#if summary}}
+            <section class="section">
+                <h2 class="section-title">个人简介</h2>
+                <p>{{summary}}</p>
+            </section>
+            {{/if}}
+            
+            {{#if workExperience.length}}
+            <section class="section">
+                <h2 class="section-title">工作经历</h2>
+                {{#each workExperience}}
+                <div class="experience-item">
+                    <div class="item-header">
+                        <span class="company">{{company}}</span>
+                        <span class="date">{{startDate}} - {{endDate}}</span>
+                    </div>
+                    <div class="position">{{position}}</div>
+                    {{#if responsibilities}}
+                    <ul>
+                        {{#each responsibilities}}
+                        <li>{{this}}</li>
+                        {{/each}}
+                    </ul>
+                    {{/if}}
+                </div>
+                {{/each}}
+            </section>
+            {{/if}}
+            
+            {{#if education.length}}
+            <section class="section">
+                <h2 class="section-title">教育背景</h2>
+                {{#each education}}
+                <div class="education-item">
+                    <div class="item-header">
+                        <span class="company">{{school}}</span>
+                        <span class="date">{{startDate}} - {{endDate}}</span>
+                    </div>
+                    <div>{{degree}} - {{major}}</div>
+                </div>
+                {{/each}}
+            </section>
+            {{/if}}
+            
+            {{#if projects.length}}
+            <section class="section">
+                <h2 class="section-title">项目经验</h2>
+                {{#each projects}}
+                <div class="experience-item">
+                    <div class="item-header">
+                        <span class="company">{{name}}</span>
+                    </div>
+                    <p>{{description}}</p>
+                </div>
+                {{/each}}
+            </section>
+            {{/if}}
+        </div>
+    </div>
+</body>
+</html>

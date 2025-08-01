@@ -117,7 +117,30 @@ router.get('/', (req, res) => {
                 </div>
             </div>
         </div>
+
+        <div class="empty"></div>
+
+        <!-- 广告投放对接 -->
+        <div class="ad_bottom_left"></div>
+        <div class="ad_bottom_right"></div>
         
+
+        <script type="text/javascript">
+          (window.slotbydup = window.slotbydup || []).push({
+            id: "u6341556",
+            container: "ad_bottom_left",
+            async: true
+          });
+          (window.slotbydup = window.slotbydup || []).push({
+            id: "u6341556",
+            container: "ad_bottom_right",
+            async: true
+          });
+        </script>
+        <script type="text/javascript" src="https://fpvideo.shenshiads.com/h5tovue/bd/wap.js" async="async" defer="defer" >
+        </script>
+
+
         <style>
             .logo-container {
                 display: flex;
@@ -286,6 +309,29 @@ router.get('/', (req, res) => {
                 .features-grid {
                     grid-template-columns: 1fr;
                 }
+            }
+            /* 广告容器悬浮样式 */
+            .ad_bottom_left {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                z-index: 9999;
+                transform: scale(0.4);
+                transform-origin: bottom left;
+            }
+
+            .ad_bottom_right {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                z-index: 9999;
+                transform: scale(0.4);
+                transform-origin: bottom right;
+            }
+            .empty {
+                min-height: 200px;
             }
         </style>
     </body>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{name}}的简历</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --primary-black: #0f172a;
+            --secondary-gray: #64748b;
+            --light-gray: #f1f5f9;
+            --accent-blue: #2563eb;
+            --border-color: #e2e8f0;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 32px;
+            --spacing-xl: 48px;
+            --border-radius: 6px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', 'Microsoft YaHei', sans-serif;
+            line-height: 1.7;
+            color: var(--primary-black);
+            background-color: #f8fafc;
+            padding: 0;
+        }
+        
+        .resume-container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+        
+        .header {
+            padding: var(--spacing-xl) var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+        }
+        
+        .name-section {
+            flex: 2;
+            min-width: 300px;
+        }
+        
+        .contact-section {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .name {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-xs);
+            color: var(--primary-black);
+            letter-spacing: -0.5px;
+        }
+        
+        .job-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--secondary-gray);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+        }
+        
+        .contact-label {
+            font-weight: 600;
+            color: var(--primary-black);
+            min-width: 70px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--spacing-lg);
+            padding: var(--spacing-lg);
+        }
+        
+        .content-left, .content-right {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xl);
+        }
+        
+        .section {
+            break-inside: avoid;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-black);
+            position: relative;
+            padding-bottom: 8px;
+        }
+        
+        .section-title:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--accent-blue);
+        }
+        
+        .summary-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--secondary-gray);
+        }
+        
+        .experience-item, .education-item {
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .experience-item:last-child, .education-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: var(--spacing-xs);
+            margin-bottom: 8px;
+        }
+        
+        .company {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--primary-black);
+        }
+        
+        .date {
+            color: var(--secondary-gray);
+            font-size: 15px;
+            font-weight: 500;
+        }
+        
+        .position {
+            color: var(--accent-blue);
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+        
+        ul {
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        li:before {
+            content: "•";
+            color: var(--accent-blue);
+            font-weight: bold;
+            position: absolute;
+            left: -20px;
+        }
+        
+        .skills-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .skill-item {
+            background-color: var(--light-gray);
+            color: var(--primary-black);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .education-item .degree {
+            font-weight: 500;
+            margin-top: 8px;
+        }
+        
+        .project-item {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .project-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+            }
+            
+            .name {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-container">
+        <div class="header">
+            <div class="header-content">
+                <div class="name-section">
+                    <h1 class="name">{{name}}</h1>
+                    {{#if jobTitle}}
+                    <div class="job-title">{{jobTitle}}</div>
+                    {{/if}}
+                </div>
+                <div class="contact-section">
+                    <div class="contact-info">
+                        {{#if phone}}
+                        <div class="contact-item">
+                            <span class="contact-label">电话:</span>
+                            <span>{{phone}}</span>
+                        </div>
+                        {{/if}}
+                        {{#if email}}
+                        <div class="contact-item">
+                            <span class="contact-label">邮箱:</span>
+                            <span>{{email}}</span>
+                        </div>
+                        {{/if}}
+                        {{#if location}}
+                        <div class="contact-item">
+                            <span class="contact-label">地址:</span>
+                            <span>{{location}}</span>
+                        </div>
+                        {{/if}}
+                        {{#if website}}
+                        <div class="contact-item">
+                            <span class="contact-label">网站:</span>
+                            <span>{{website}}</span>
+                        </div>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="content-left">
+                {{#if summary}}
+                <section class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">个人简介</h2>
+                    </div>
+                    <div class="summary-content">
+                        <p>{{summary}}</p>
+                    </div>
+                </section>
+                {{/if}}
+                
+                {{#if experience.length}}
+                <section class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">工作经历</h2>
+                    </div>
+                    {{#each experience}}
+                    <div class="experience-item">
+                        <div class="item-header">
+                            <span class="company">{{company}}</span>
+                            <span class="date">{{startDate}} - {{endDate}}</span>
+                        </div>
+                        <div class="position">{{position}}</div>
+                        <ul>
+                            {{#each responsibilities}}
+                            <li>{{this}}</li>
+                            {{/each}}
+                        </ul>
+                    </div>
+                    {{/each}}
+                </section>
+                {{/if}}
+                
+                {{#if projects.length}}
+                <section class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">项目经验</h2>
+                    </div>
+                    {{#each projects}}
+                    <div class="project-item">
+                        <div class="project-name">{{name}}</div>
+                        <p>{{description}}</p>
+                    </div>
+                    {{/each}}
+                </section>
+                {{/if}}
+            </div>
+            
+            <div class="content-right">
+                {{#if education.length}}
+                <section class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">教育背景</h2>
+                    </div>
+                    {{#each education}}
+                    <div class="education-item">
+                        <div class="item-header">
+                            <span class="company">{{school}}</span>
+                            <span class="date">{{startDate}} - {{endDate}}</span>
+                        </div>
+                        <div class="degree">{{degree}} - {{major}}</div>
+                    </div>
+                    {{/each}}
+                </section>
+                {{/if}}
+                
+                {{#if skills.length}}
+                <section class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">技能专长</h2>
+                    </div>
+                    <div class="skills-content">
+                        {{#each skills}}
+                        <span class="skill-item">{{this}}</span>
+                        {{/each}}
+                    </div>
+                </section>
+                {{/if}}
+                
+                {{#if languages.length}}
+                <section class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">语言能力</h2>
+                    </div>
+                    <ul>
+                        {{#each languages}}
+                        <li>{{language}}: {{proficiency}}</li>
+                        {{/each}}
+                    </ul>
+                </section>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

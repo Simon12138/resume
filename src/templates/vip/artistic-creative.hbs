@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{name}}的简历</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+        
+        :root {
+            --primary-burgundy: #8d2d40;
+            --secondary-burgundy: #5e1e2b;
+            --accent-gold: #d4af37;
+            --accent-rose: #e75480;
+            --light-cream: #fdf0f0;
+            --dark-charcoal: #333333;
+            --medium-gray: #666666;
+            --border-color: #e8c4c4;
+            --shadow: 0 15px 30px rgba(141, 45, 64, 0.15);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Lato', 'Microsoft YaHei', sans-serif;
+            line-height: 1.8;
+            color: var(--dark-charcoal);
+            background: linear-gradient(135deg, #fdf0f0 0%, #f8e8e8 100%);
+            padding: 20px;
+        }
+        
+        .resume-container {
+            max-width: 960px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+        
+        .resume-container:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg, var(--primary-burgundy), var(--accent-gold), var(--accent-rose));
+        }
+        
+        .header {
+            padding: 70px 50px 50px;
+            text-align: center;
+            background: var(--light-cream);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header:before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .header:after {
+            content: "";
+            position: absolute;
+            bottom: -30px;
+            left: 50px;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(142, 46, 64, 0.1);
+        }
+        
+        .name {
+            font-family: 'Dancing Script', cursive;
+            font-size: 72px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--primary-burgundy);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .job-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 400;
+            color: var(--secondary-burgundy);
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            font-size: 18px;
+            color: var(--medium-gray);
+            font-weight: 300;
+        }
+        
+        .contact-info span {
+            position: relative;
+            padding: 0 15px;
+        }
+        
+        .contact-info span:not(:last-child):after {
+            content: "•";
+            position: absolute;
+            right: -5px;
+            color: var(--accent-rose);
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            padding: 50px;
+        }
+        
+        .section {
+            margin-bottom: 10px;
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 30px;
+            color: var(--primary-burgundy);
+            margin-bottom: 30px;
+            position: relative;
+            text-align: center;
+        }
+        
+        .section-title:before {
+            content: "✿";
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: -30px;
+            color: var(--accent-gold);
+            font-size: 24px;
+        }
+        
+        .section-title:after {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+        }
+        
+        .summary-content {
+            font-size: 17px;
+            line-height: 1.9;
+            color: var(--medium-gray);
+            padding: 0 20px;
+            font-style: italic;
+        }
+        
+        .art-card {
+            background: var(--light-cream);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .art-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(141, 45, 64, 0.2);
+        }
+        
+        .art-card:before {
+            content: "";
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-gold);
+        }
+        
+        .art-card:after {
+            content: "";
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-rose);
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .company {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 22px;
+            color: var(--primary-burgundy);
+        }
+        
+        .date {
+            color: var(--medium-gray);
+            font-size: 16px;
+            font-style: italic;
+        }
+        
+        .position {
+            color: var(--accent-rose);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        ul {
+            padding-left: 25px;
+        }
+        
+        li {
+            margin-bottom: 12px;
+            position: relative;
+        }
+        
+        li:before {
+            content: "❀";
+            color: var(--accent-gold);
+            position: absolute;
+            left: -25px;
+            top: 1px;
+            font-size: 14px;
+        }
+        
+        .skills-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .skill-item {
+            background: linear-gradient(120deg, var(--light-cream), #f5e4e4);
+            color: var(--primary-burgundy);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 700;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .skill-item:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+        
+        .education-item .degree {
+            color: var(--secondary-burgundy);
+            font-weight: 700;
+            margin-top: 10px;
+        }
+        
+        .project-grid {
+            display: grid;
+            gap: 25px;
+        }
+        
+        .project-card {
+            background: var(--light-cream);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .project-card:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-rose));
+        }
+        
+        .project-name {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: var(--primary-burgundy);
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                padding: 30px;
+                gap: 30px;
+            }
+            
+            .header {
+                padding: 50px 20px 30px;
+            }
+            
+            .name {
+                font-size: 50px;
+            }
+            
+            .job-title {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-container">
+        <div class="header">
+            <h1 class="name">{{name}}</h1>
+            {{#if jobTitle}}
+            <div class="job-title">{{jobTitle}}</div>
+            {{/if}}
+            <div class="contact-info">
+                {{#if phone}}
+                <span>{{phone}}</span>
+                {{/if}}
+                {{#if email}}
+                <span>{{email}}</span>
+                {{/if}}
+                {{#if location}}
+                <span>{{location}}</span>
+                {{/if}}
+                {{#if website}}
+                <span>{{website}}</span>
+                {{/if}}
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="content-left">
+                {{#if summary}}
+                <section class="section">
+                    <h2 class="section-title">个人简介</h2>
+                    <div class="summary-content">
+                        <p>{{summary}}</p>
+                    </div>
+                </section>
+                {{/if}}
+                
+                {{#if experience.length}}
+                <section class="section">
+                    <h2 class="section-title">工作经历</h2>
+                    {{#each experience}}
+                    <div class="art-card">
+                        <div class="item-header">
+                            <span class="company">{{company}}</span>
+                            <span class="date">{{startDate}} - {{endDate}}</span>
+                        </div>
+                        <div class="position">{{position}}</div>
+                        <ul>
+                            {{#each responsibilities}}
+                            <li>{{this}}</li>
+                            {{/each}}
+                        </ul>
+                    </div>
+                    {{/each}}
+                </section>
+                {{/if}}
+            </div>
+            
+            <div class="content-right">
+                {{#if education.length}}
+                <section class="section">
+                    <h2 class="section-title">教育背景</h2>
+                    {{#each education}}
+                    <div class="art-card">
+                        <div class="item-header">
+                            <span class="company">{{school}}</span>
+                            <span class="date">{{startDate}} - {{endDate}}</span>
+                        </div>
+                        <div class="degree">{{degree}} - {{major}}</div>
+                    </div>
+                    {{/each}}
+                </section>
+                {{/if}}
+                
+                {{#if skills.length}}
+                <section class="section">
+                    <h2 class="section-title">技能专长</h2>
+                    <div class="skills-content">
+                        {{#each skills}}
+                        <div class="skill-item">{{this}}</div>
+                        {{/each}}
+                    </div>
+                </section>
+                {{/if}}
+                
+                {{#if projects.length}}
+                <section class="section">
+                    <h2 class="section-title">项目经验</h2>
+                    <div class="project-grid">
+                        {{#each projects}}
+                        <div class="project-card">
+                            <div class="project-name">{{name}}</div>
+                            <p>{{description}}</p>
+                        </div>
+                        {{/each}}
+                    </div>
+                </section>
+                {{/if}}
+                
+                {{#if languages.length}}
+                <section class="section">
+                    <h2 class="section-title">语言能力</h2>
+                    <div class="art-card">
+                        <ul>
+                            {{#each languages}}
+                            <li>{{language}}: {{proficiency}}</li>
+                            {{/each}}
+                        </ul>
+                    </div>
+                </section>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

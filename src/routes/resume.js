@@ -30,6 +30,14 @@ router.get('/', (req, res) => {
             margin-bottom: 30px;
           }
           
+          #uploadPdfBtn {
+            margin-bottom: 10px;
+          }
+          
+          .button-group {
+            margin-top: 10px;
+          }
+          
           .resume-builder-container {
             display: flex;
             gap: 20px;
@@ -194,7 +202,7 @@ router.get('/', (req, res) => {
             display: flex;
             flex-direction: column;
             min-height: 0; /* 允许flex项目收缩 */
-            max-height: 25%;
+            max-height: 30%;
             background-color: #ffffff;
             border-radius: 8px;
             padding: 20px;
@@ -629,6 +637,31 @@ router.get('/', (req, res) => {
             font-size: 48px;
             margin-bottom: 20px;
           }
+          
+          /* 广告容器悬浮样式 */
+          .ad_bottom_left {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 9999;
+            transform: scale(0.4);
+            transform-origin: bottom left;
+          }
+
+          .ad_bottom_right {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 9999;
+            transform: scale(0.4);
+            transform-origin: bottom right;
+          }
+
+          .empty {
+              min-height: 200px;
+          }
         </style>
     </head>
     <body>
@@ -689,6 +722,12 @@ router.get('/', (req, res) => {
               <div class="content-panel">
                     <h2>输入简历内容</h2>
                     <div class="input-section">
+                        <div class="button-group">
+                            <input type="file" id="pdfUpload" accept=".pdf" style="display: none;">
+                            <button class="btn" id="uploadPdfBtn">
+                                导入简历内容
+                            </button>
+                        </div>
                         <div class="input-group">
                             <textarea id="rawText" placeholder="请输入简历内容，例如：
 您好，我是张三，一名拥有5年以上经验的高级软件工程师，目前居住在北京市朝阳区。如果您需要联系我，我的电话是138-0000-0000，邮箱是zhangsan@example.com。
@@ -713,15 +752,15 @@ router.get('/', (req, res) => {
                         </div>
                         
                         <div class="button-group">
-                            <button class="btn" id="parseBtn">
-                                <span id="parsingIndicator" style="display: none;">🔄 解析中，请耐心等待，预计1~3分钟左右...</span>
-                                <span id="parseText">智能解析</span>
+                            <button class="btn" id="parseBtn" style="margin-left: 10px;">
+                                <span id="parsingIndicator" style="display: none;">🔄 生成中，请耐心等待，预计1~3分钟左右...</span>
+                                <span id="parseText">生成漂亮简历</span>
                             </button>
                             <button class="btn btn-secondary" id="openOptimizeModal" style="margin-left: 10px;">
-                                优化内容 <span style="color: #FFD700; font-weight: bold;">★VIP</span>
+                                优化简历文案 <span style="color: #FFD700; font-weight: bold;">★VIP</span>
                             </button>
                             <button class="btn btn-download" id="downloadPdfBtn" style="margin-left: 10px; display: none;">
-                                下载PDF
+                                下载漂亮简历
                             </button>
                         </div>
                     </div>
@@ -739,6 +778,7 @@ router.get('/', (req, res) => {
                 </div>
             </div>
         </div>
+        <div class="empty"></div>
         
         <!-- 优化弹窗 -->
         <div class="optimize-modal" id="optimizeModal">
@@ -806,6 +846,10 @@ router.get('/', (req, res) => {
             </div>
           </div>
         </div>
+
+        <!-- 广告投放对接 -->
+        <div class="ad_bottom_left"></div>
+        <div class="ad_bottom_right"></div>
         
         <script>
           // 初始化元素引用
@@ -1149,6 +1193,30 @@ router.get('/', (req, res) => {
             previewContent.innerHTML = \`<div class="preview-placeholder"><p>\${message}</p></div>\`;
           }
           
+          // 显示消息
+          function showMessage(message, type) {
+            // 移除现有消息
+            const existingMessage = document.querySelector('.alert');
+            if (existingMessage) {
+              existingMessage.remove();
+            }
+
+            // 创建新消息
+            const messageElement = document.createElement('div');
+            messageElement.className = 'alert alert-' + type;
+            messageElement.textContent = message;
+            messageElement.style.cssText = 'position: fixed; top: 20px; right: 20px; padding: 15px 20px; border-radius: 8px; color: white; font-weight: 500; z-index: 1000; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); ' + (type === 'success' ? 'background-color: #4caf50;' : '') + (type === 'danger' ? 'background-color: #f44336;' : '');
+
+            document.body.appendChild(messageElement);
+
+            // 3秒后自动移除消息
+            setTimeout(() => {
+              if (messageElement.parentNode) {
+                messageElement.remove();
+              }
+            }, 3000);
+          }
+          
           // 优化简历
           async function optimizeResume() {
             const text = rawTextForOptimize.value.trim();
@@ -1195,10 +1263,6 @@ router.get('/', (req, res) => {
           
           // 生成模板
           async function generateTemplate() {
-            // 检查用户是否登录
-            // 这里我们假设用户信息可以通过某种方式获取，比如全局变量或通过API请求
-            // 在实际应用中，这可能需要通过服务器端会话或JWT来验证
-            
             const description = templateDescription.value.trim();
             
             if (!description) {
@@ -1239,6 +1303,52 @@ router.get('/', (req, res) => {
               generatingModal.style.display = 'none';
               generateTemplateBtn.disabled = false;
             }
+          }
+          
+          // 上传PDF按钮事件
+          if (uploadPdfBtn && pdfUpload) {
+            uploadPdfBtn.addEventListener('click', function() {
+              pdfUpload.click();
+            });
+            
+            pdfUpload.addEventListener('change', function(e) {
+              const file = e.target.files[0];
+              if (file && file.type === 'application/pdf') {
+                const formData = new FormData();
+                formData.append('pdf', file);
+                
+                // 显示解析指示器
+                parsingIndicator.style.display = 'inline';
+                parseText.style.display = 'none';
+                parseBtn.disabled = true;
+                
+                fetch('/api/resume/parse-pdf', {
+                  method: 'POST',
+                  body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                  if (data.success) {
+                    rawText.value = data.text;
+                    showMessage('PDF解析成功，已填充到文本框中', 'success');
+                  } else {
+                    showMessage('PDF解析失败: ' + data.message, 'danger');
+                  }
+                })
+                .catch(error => {
+                  console.error('PDF解析出错:', error);
+                  showMessage('PDF解析过程中发生错误', 'danger');
+                })
+                .finally(() => {
+                  // 隐藏解析指示器
+                  parsingIndicator.style.display = 'none';
+                  parseText.style.display = 'inline';
+                  parseBtn.disabled = false;
+                });
+              } else if (file) {
+                showMessage('请选择一个有效的PDF文件', 'danger');
+              }
+            });
           }
           
           // 下载PDF
@@ -1287,6 +1397,20 @@ router.get('/', (req, res) => {
               }, 500); // 延迟隐藏弹窗，确保用户能看到下载完成的提示
             }
           }
+        </script>
+        <script type="text/javascript">
+          (window.slotbydup = window.slotbydup || []).push({
+            id: "u6341556",
+            container: "ad_bottom_left",
+            async: true
+          });
+          (window.slotbydup = window.slotbydup || []).push({
+            id: "u6341556",
+            container: "ad_bottom_right",
+            async: true
+          });
+        </script>
+        <script type="text/javascript" src="https://fpvideo.shenshiads.com/h5tovue/bd/wap.js" async="async" defer="defer" >
         </script>
     </body>
     </html>

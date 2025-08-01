@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
 const session = require('express-session');
+const fileUpload = require('express-fileupload');
 
 // 加载环境变量
 dotenv.config();
@@ -24,6 +25,9 @@ const PORT = process.env.PORT || 3000;
 // 中间件
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(fileUpload({
+  limits: { fileSize: 50 * 1024 * 1024 }, // 限制文件大小为50MB
+}));
 
 // 会话中间件
 app.use(session({
@@ -61,16 +65,6 @@ templateService.initializeBuiltInTemplates()
   })
   .catch(error => {
     console.error('模板服务初始化失败:', error);
-  });
-
-// 初始化PDF服务
-pdfService._initializeBrowser()
-  .then(() => {
-    console.log('PDF服务初始化完成');
-  })
-  .catch(error => {
-    console.error('PDF服务初始化失败:', error.message);
-    console.log('PDF功能可能不可用，将在首次使用时尝试重新初始化');
   });
 
 // 路由
