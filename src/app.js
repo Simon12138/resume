@@ -69,7 +69,7 @@ templateService.initializeBuiltInTemplates()
 
 // 路由
 app.use('/', indexRouter);
-app.use('/resume', requireAuth, resumeRouter);
+app.use('/resume', resumeRouter); // 移除 requireAuth 中间件，允许未登录用户访问
 app.use('/api', apiRouter);
 app.use('/api/templates', templatesRouter);
 app.use('/', registerRouter);

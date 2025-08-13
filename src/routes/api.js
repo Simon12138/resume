@@ -227,10 +227,10 @@ router.post('/resume/parse-pdf', async (req, res) => {
   }
 });
 
-// 优化简历内容（全局接口，不依赖特定简历ID）
+// 优化简历文案（全局接口，不依赖特定简历ID）
 router.post('/resume/optimize', async (req, res) => {
   try {
-    const { text, prompt } = req.body;
+    const { text, prompt, jd } = req.body;
     
     if (!text || typeof text !== 'string') {
       return res.status(400).json({
@@ -240,7 +240,12 @@ router.post('/resume/optimize', async (req, res) => {
     }
     
     // 构建优化上下文
-    const context = prompt || '请优化这份简历，使其更加专业、简洁、有吸引力，突出技能和成就。';
+    let context = prompt || '请优化这份简历，使其更加专业、简洁、有吸引力，突出技能和成就。';
+    
+    // 如果提供了JD信息，则添加到上下文中
+    if (jd && typeof jd === 'string') {
+      context += `\n\n职位描述信息：\n${jd}`;
+    }
     
     // 调用通义千问服务优化内容
     const optimizedContent = await qwenService.optimizeContent(text, context);
@@ -253,7 +258,7 @@ router.post('/resume/optimize', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('优化简历内容失败:', error);
+    console.error('优化简历文案失败:', error);
     res.status(500).json({
       success: false,
       message: '内容优化失败: ' + error.message
@@ -377,7 +382,7 @@ router.post('/resume/:id/optimize', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('优化简历内容失败:', error);
+    console.error('优化简历文案失败:', error);
     res.status(500).json({
       success: false,
       message: '内容优化失败: ' + error.message
@@ -653,10 +658,12 @@ router.post('/login', async (req, res) => {
         message: '用户名和密码都是必填项'
       });
     }
-    
+
     // 验证用户
     const user = await userService.validateUser(username, password);
     
+    console.log('user login: ', user)
+
     if (user) {
       // 将用户信息存储在会话中
       req.session.user = user;
@@ -676,6 +683,68 @@ router.post('/login', async (req, res) => {
     res.status(500).json({
       success: false,
       message: '登录过程中发生错误'
+    });
+  }
+});
+
+// 更新用户下载次数API
+router.post('/user/update-download-count', async (req, res) => {
+  try {
+    const { userId } = req.body;
+    
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: '用户ID是必填项'
+      });
+    }
+    
+    // 读取所有用户
+    const users = await userService.getAllUsers();
+    
+    // 查找目标用户
+    const userIndex = users.findIndex(user => user.id === userId);
+    
+    if (userIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: '用户不存在'
+      });
+    }
+    
+    // 更新下载次数
+    const user = users[userIndex];
+    if (!user.downloadCount) {
+      user.downloadCount = 3; // 如果之前没有设置，默认为3次
+    }
+    
+    // 检查用户是否还有下载次数
+    if (user.downloadCount <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: '您的下载次数已用完，请升级为VIP用户以获得无限下载次数'
+      });
+    }
+    
+    // 减少下载次数
+    user.downloadCount -= 1;
+    
+    // 保存更新后的用户数据
+    await userService._writeUsers(users);
+    
+    // 返回更新后的用户信息（不包含密码）
+    const { password, ...userWithoutPassword } = user;
+    
+    res.json({
+      success: true,
+      message: '下载次数更新成功',
+      data: userWithoutPassword
+    });
+  } catch (error) {
+    console.error('更新下载次数失败:', error);
+    res.status(500).json({
+      success: false,
+      message: '更新下载次数失败: ' + error.message
     });
   }
 });

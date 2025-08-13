@@ -121,15 +121,6 @@ router.get('/', (req, res) => {
             font-weight: 500;
           }
           
-          .vip-badge {
-            background-color: #FFD700;
-            color: #000;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            margin-left: 8px;
-            font-weight: 600;
-          }
           
           .template-card {
             border: 1px solid #ddd;
@@ -637,30 +628,14 @@ router.get('/', (req, res) => {
             font-size: 48px;
             margin-bottom: 20px;
           }
-          
-          /* 广告容器悬浮样式 */
-          .ad_bottom_left {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            z-index: 9999;
-            transform: scale(0.4);
-            transform-origin: bottom left;
-          }
-
-          .ad_bottom_right {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            z-index: 9999;
-            transform: scale(0.4);
-            transform-origin: bottom right;
-          }
+        
 
           .empty {
               min-height: 200px;
+          }
+          
+          .contact-container:hover .contact-tooltip {
+            display: block !important;
           }
         </style>
     </head>
@@ -674,18 +649,32 @@ router.get('/', (req, res) => {
                 <nav class="nav-links">
                     <a href="/" class="nav-link">首页</a>
                     <a href="/resume" class="nav-link active">创建简历</a>
+                    <div class="contact-container" style="position: relative; display: inline-block; margin-left: 15px;">
+                        <span class="nav-link" style="cursor: default;">联系我们</span>
+                        <div class="contact-tooltip" style="display: none; position: absolute; top: 100%; right: 0; background: #333; color: white; padding: 10px; border-radius: 4px; white-space: nowrap; z-index: 1000; font-size: 14px;">
+                            联系邮箱：599082380@qq.com
+                        </div>
+                    </div>
+                    ${user && !user.isVIP ? '<a href="#" class="nav-link" id="becomeVipLink">成为会员</a>' : ''}
                     <span class="user-info">当前用户: ${user ? user.username : '访客'} | ${user ? '<a href="/logout" class="nav-link">登出</a>' : '<a href="/login" class="nav-link">登录</a>'}</span>
                 </nav>
             </div>
         </header>
         
-        <!-- 模板生成提示弹窗 -->
-        <div class="generating-modal" id="generatingModal">
-          <div class="generating-modal-content">
-            <div class="spinner-large">🔄</div>
-            <h2>简历模板生成中</h2>
-            <p>请耐心等待，预计1~3分钟</p>
-          </div>
+        <!-- 支付对话框 -->
+        <div id="paymentModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 10000;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 8px; padding: 20px; width: 500px; max-width: 90%; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); text-align: center;">
+                <h3 style="margin-top: 0; color: #333;">成为会员</h3>
+                <p style="line-height: 1.6; color: #666;">您还不是会员，请扫码下方小红书账号二维码，关注后私信成为会员</p>
+                <p style="line-height: 1.6; color: #666; margin-bottom: 20px;">非会员仅享受3次下载文件机会，关注后私信，可享受5次，成为会员即可无限制下载</p>
+                <div style="padding: 10px; display: flex; justify-content: center; align-items: center;">
+                    <img src="/data/account.JPG" alt="账号二维码" style="max-width: 100%; height: auto; max-height: 400px; object-fit: contain;">
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                    <button id="cancelPayment" style="flex: 1; margin-right: 10px; padding: 12px; background-color: #f1f1f1; border: none; border-radius: 4px; cursor: pointer; color: #333;">取消</button>
+                    <button id="confirmPayment" style="flex: 1; margin-left: 10px; padding: 12px; background-color: #0071e3; color: white; border: none; border-radius: 4px; cursor: pointer;">已关注</button>
+                </div>
+            </div>
         </div>
         
         <div class="container">
@@ -703,7 +692,7 @@ router.get('/', (req, res) => {
                     <div class="form-group" style="margin-bottom: 0;">
                         <button class="btn" id="generateTemplateBtn">
                             <span id="templateGeneratingIndicator" style="display: none;">生成中...</span>
-                            <span>生成模板 <span style="color: #FFD700; font-weight: bold;">★VIP</span></span>
+                            <span>生成模板</span>
                         </button>
                     </div>
                 </div>
@@ -757,7 +746,7 @@ router.get('/', (req, res) => {
                                 <span id="parseText">生成漂亮简历</span>
                             </button>
                             <button class="btn btn-secondary" id="openOptimizeModal" style="margin-left: 10px;">
-                                优化简历文案 <span style="color: #FFD700; font-weight: bold;">★VIP</span>
+                                优化简历文案
                             </button>
                             <button class="btn btn-download" id="downloadPdfBtn" style="margin-left: 10px; display: none;">
                                 下载漂亮简历
@@ -780,22 +769,53 @@ router.get('/', (req, res) => {
         </div>
         <div class="empty"></div>
         
+        <!-- 登录对话框 -->
+        <div id="loginModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 10000;">
+            <div class="modal-content" style="background-color: #fff; margin: 10% auto; padding: 0; border-radius: 8px; width: 90%; max-width: 500px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); position: relative;">
+                <div class="modal-header" style="padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                    <h2 style="margin: 0; font-size: 24px; color: #333;">用户登录</h2>
+                    <span class="close" id="closeLoginModal" style="font-size: 28px; cursor: pointer; color: #aaa;">&times;</span>
+                </div>
+                <form id="loginForm">
+                    <div class="modal-body" style="padding: 30px;">
+                        <div class="form-group" style="margin-bottom: 20px; display: flex; align-items: center;">
+                            <label for="loginUsername" style="flex: 0 0 120px; margin-bottom: 0; font-weight: 500; color: #333;">用户名或手机号</label>
+                            <input type="text" id="loginUsername" name="username" required style="flex: 1; margin-left: 10px; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; box-sizing: border-box;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 20px; display: flex; align-items: center;">
+                            <label for="loginPassword" style="flex: 0 0 120px; margin-bottom: 0; font-weight: 500; color: #333;">密码</label>
+                            <input type="password" id="loginPassword" name="password" required style="flex: 1; margin-left: 10px; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; box-sizing: border-box;">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; background-color: #007bff; color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: 500;">登录</button>
+                    </div>
+                </form>
+                <div style="padding: 0 30px 30px; text-align: center;">
+                    <p style="margin: 0; font-size: 14px; color: #666;">还没有账户？<a href="/register" class="nav-link" style="color: #007bff; text-decoration: none; display: inline; padding: 0; margin: 0;">立即注册</a></p>
+                </div>
+            </div>
+        </div>
+        
         <!-- 优化弹窗 -->
         <div class="optimize-modal" id="optimizeModal">
           <div class="modal-content">
             <div class="modal-header">
               <h2>优化简历内容</h2>
-              <button class="close-modal close-modal-btn">X</button>
+              <button class="close-modal close-modal-btn">&times;</button>
             </div>
             <div class="modal-body">
               <div class="form-group">
-                <label for="rawTextForOptimize">简历原始内容</label>
+                <label for="rawTextForOptimize" style="text-align: left; display: block;">简历原始内容</label>
                 <textarea id="rawTextForOptimize" placeholder="请输入你的简历原始信息"></textarea>
               </div>
               
               <div class="form-group">
-                <label for="optimizePrompt">优化提示</label>
+                <label for="optimizePrompt" style="text-align: left; display: block;">你想要的效果</label>
                 <textarea id="optimizePrompt" placeholder="告诉AI如何优化你的简历，例如：请帮我优化这份简历，让它更适合应聘软件工程师职位，突出我的技术能力和项目经验。"></textarea>
+              </div>
+              
+              <div class="form-group">
+                <label for="jdInfo" style="text-align: left; display: block;">职位描述(JD)</label>
+                <textarea id="jdInfo" placeholder="请输入职位描述信息，帮助AI更好地优化简历"></textarea>
               </div>
               
               <button id="submitOptimize" class="btn btn-primary">提交优化</button>
@@ -846,10 +866,6 @@ router.get('/', (req, res) => {
             </div>
           </div>
         </div>
-
-        <!-- 广告投放对接 -->
-        <div class="ad_bottom_left"></div>
-        <div class="ad_bottom_right"></div>
         
         <script>
           // 初始化元素引用
@@ -864,6 +880,7 @@ router.get('/', (req, res) => {
           const closeButtons = document.querySelectorAll('.close-modal');
           const rawTextForOptimize = document.getElementById('rawTextForOptimize');
           const optimizePrompt = document.getElementById('optimizePrompt');
+          const jdInfo = document.getElementById('jdInfo');
           const submitOptimize = document.getElementById('submitOptimize');
           const optimizeGeneratingIndicator = document.getElementById('optimizeGeneratingIndicator');
           const optimizeResult = document.getElementById('optimizeResult');
@@ -905,6 +922,9 @@ router.get('/', (req, res) => {
           
           // 渲染模板列表
           function renderTemplateList(templates) {
+            // 按模板名称排序
+            templates.sort((a, b) => a.name.localeCompare(b.name));
+            
             templateList.innerHTML = '';
             
             templates.forEach(template => {
@@ -918,7 +938,6 @@ router.get('/', (req, res) => {
                   <div style="display: flex; align-items: center;">
                     <h3>\${template.name}</h3>
                     \${template.isAiGenerated ? '<span class="ai-badge">AI</span>' : ''}
-                    \${template.isVip ? '<span class="vip-badge">VIP</span>' : ''}
                   </div>
                   <p>\${template.description || '无描述'}</p>
                 </div>
@@ -995,6 +1014,24 @@ router.get('/', (req, res) => {
                 parsingModal.style.display = 'none';
                 downloadingModal.style.display = 'none';
               });
+            });
+            
+            // 成为会员链接点击事件
+            document.addEventListener('click', function(e) {
+              if (e.target.id === 'becomeVipLink') {
+                e.preventDefault();
+                document.getElementById('paymentModal').style.display = 'block';
+              }
+              
+              // 取消支付按钮点击事件
+              if (e.target.id === 'cancelPayment') {
+                document.getElementById('paymentModal').style.display = 'none';
+              }
+              
+              // 确认支付按钮点击事件
+              if (e.target.id === 'confirmPayment') {
+                document.getElementById('paymentModal').style.display = 'none';
+              }
             });
             
             // 生成模板
@@ -1221,6 +1258,7 @@ router.get('/', (req, res) => {
           async function optimizeResume() {
             const text = rawTextForOptimize.value.trim();
             const prompt = optimizePrompt.value.trim();
+            const jdInfo = document.getElementById('jdInfo').value.trim();
             
             if (!text) {
               alert('请输入简历文本');
@@ -1239,7 +1277,8 @@ router.get('/', (req, res) => {
                 },
                 body: JSON.stringify({ 
                   text: text,
-                  prompt: prompt
+                  prompt: prompt,
+                  jd: jdInfo
                 })
               });
               
@@ -1353,6 +1392,29 @@ router.get('/', (req, res) => {
           
           // 下载PDF
           async function downloadPdf() {
+            // 检查用户是否已登录
+            // 优先检查全局currentUser变量（登录后更新），其次检查页面加载时的user对象
+            const user = typeof currentUser !== 'undefined' ? currentUser : ${JSON.stringify(user)};
+            if (!user) {
+              // 用户未登录，显示登录对话框
+              document.getElementById('loginModal').style.display = 'block';
+              return;
+            }
+            
+            // 用户已登录，执行实际下载
+            performDownload();
+          }
+          
+          // 实际的下载逻辑
+          async function performDownload() {
+            const user = typeof currentUser !== 'undefined' ? currentUser : ${JSON.stringify(user)};
+            
+            // 检查用户下载次数（VIP用户不受限制）
+            if (user && !user.isVip && user.downloadCount <= 0) {
+              alert('您的下载次数已用完，请升级为VIP用户以获得无限下载次数');
+              return;
+            }
+            
             if (!parsedResumeData || !selectedTemplateId) {
               alert('请先解析简历并选择模板');
               return;
@@ -1383,6 +1445,23 @@ router.get('/', (req, res) => {
                 a.click();
                 document.body.removeChild(a);
                 window.URL.revokeObjectURL(url);
+                
+                // 更新用户下载次数（非VIP用户）
+                if (user && !user.isVip) {
+                  try {
+                    await fetch('/api/user/update-download-count', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({
+                        userId: user.id
+                      })
+                    });
+                  } catch (error) {
+                    console.error('更新下载次数失败:', error);
+                  }
+                }
               } else {
                 const result = await response.json();
                 alert('生成PDF失败: ' + (result.message || '未知错误'));
@@ -1397,20 +1476,74 @@ router.get('/', (req, res) => {
               }, 500); // 延迟隐藏弹窗，确保用户能看到下载完成的提示
             }
           }
-        </script>
-        <script type="text/javascript">
-          (window.slotbydup = window.slotbydup || []).push({
-            id: "u6341556",
-            container: "ad_bottom_left",
-            async: true
+          
+          
+          // 登录表单提交处理
+          document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            try {
+              const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+              });
+              
+              const result = await response.json();
+              
+              if (result.success) {
+                // 登录成功，关闭登录对话框
+                document.getElementById('loginModal').style.display = 'none';
+                // 显示成功消息
+                showMessage('登录成功！', 'success');
+                // 更新页面右上角的用户信息
+                const userInfoElement = document.querySelector('.user-info');
+                if (userInfoElement) {
+                  userInfoElement.innerHTML = '当前用户: ' + result.data.username + ' | <a href="/logout" class="nav-link">登出</a>';
+                }
+                // 更新导航栏中的成为会员链接
+                const navLinks = document.querySelector('.nav-links');
+                if (navLinks && result.data && !result.data.isVip) {
+                  const becomeVipLink = document.createElement('a');
+                  becomeVipLink.href = '#';
+                  becomeVipLink.className = 'nav-link';
+                  becomeVipLink.id = 'becomeVipLink';
+                  becomeVipLink.textContent = '成为会员';
+                  navLinks.insertBefore(becomeVipLink, userInfoElement);
+                }
+                // 更新全局用户变量
+                window.currentUser = result.data;
+                // 重新执行下载操作，但这次绕过登录检查
+                setTimeout(() => {
+                  // 直接调用下载逻辑，跳过用户检查
+                  performDownload();
+                }, 1000);
+              } else {
+                alert('登录失败: ' + result.message);
+              }
+            } catch (error) {
+              console.error('登录出错:', error);
+              alert('登录过程中发生错误');
+            }
           });
-          (window.slotbydup = window.slotbydup || []).push({
-            id: "u6341556",
-            container: "ad_bottom_right",
-            async: true
+          
+          // 关闭登录对话框
+          document.getElementById('closeLoginModal').addEventListener('click', function() {
+            document.getElementById('loginModal').style.display = 'none';
           });
-        </script>
-        <script type="text/javascript" src="https://fpvideo.shenshiads.com/h5tovue/bd/wap.js" async="async" defer="defer" >
+          
+          // 点击对话框外部关闭
+          window.addEventListener('click', function(e) {
+            const loginModal = document.getElementById('loginModal');
+            if (e.target === loginModal) {
+              loginModal.style.display = 'none';
+            }
+          });
         </script>
     </body>
     </html>
@@ -1418,3 +1551,4 @@ router.get('/', (req, res) => {
 });
 
 module.exports = router;
+

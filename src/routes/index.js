@@ -16,6 +16,11 @@ router.get('/', (req, res) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>简历智能助手</title>
         <link rel="stylesheet" href="/css/style.css">
+        <style>
+            .contact-container:hover .contact-tooltip {
+                display: block !important;
+            }
+        </style>
     </head>
     <body>
         <header class="header">
@@ -27,6 +32,13 @@ router.get('/', (req, res) => {
                 <nav class="nav-links">
                     <a href="/" class="nav-link">首页</a>
                     <a href="/resume" class="nav-link">创建简历</a>
+                    <div class="contact-container" style="position: relative; display: inline-block; margin-left: 15px;">
+                        <span class="nav-link" style="cursor: default;">联系我们</span>
+                        <div class="contact-tooltip" style="display: none; position: absolute; top: 100%; right: 0; background: #333; color: white; padding: 10px; border-radius: 4px; white-space: nowrap; z-index: 1000; font-size: 14px;">
+                            联系邮箱：599082380@qq.com
+                        </div>
+                    </div>
+                    ${isLoggedIn && !user.isVIP ? '<a href="#" class="nav-link" id="becomeVipLink">成为会员</a>' : ''}
                     ${isLoggedIn ? 
                       `<span class="user-info">欢迎, ${user.username} | <a href="/logout" class="nav-link">登出</a></span>` : 
                       `<a href="/login" class="nav-link">登录</a>
@@ -35,13 +47,31 @@ router.get('/', (req, res) => {
             </div>
         </header>
         
+        <!-- 支付对话框 -->
+        <div id="paymentModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 10000;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 8px; padding: 20px; width: 500px; max-width: 90%; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); text-align: center;">
+                <h3 style="margin-top: 0; color: #333;">成为会员</h3>
+                <p style="line-height: 1.6; color: #666;">您还不是会员，请扫码下方小红书账号二维码，关注后私信成为会员</p>
+                <p style="line-height: 1.6; color: #666; margin-bottom: 20px;">非会员仅享受3次下载文件机会，关注后私信，可享受5次，成为会员即可无限制下载</p>
+                <div style="padding: 10px; display: flex; justify-content: center; align-items: center;">
+                    <img src="/data/account.JPG" alt="账号二维码" style="max-width: 100%; height: auto; max-height: 400px; object-fit: contain;">
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                    <button id="cancelPayment" style="flex: 1; margin-right: 10px; padding: 12px; background-color: #f1f1f1; border: none; border-radius: 4px; cursor: pointer; color: #333;">取消</button>
+                    <button id="confirmPayment" style="flex: 1; margin-left: 10px; padding: 12px; background-color: #0071e3; color: white; border: none; border-radius: 4px; cursor: pointer;">已关注</button>
+                </div>
+            </div>
+        </div>
+        
         <div class="container">
             <div class="card hero-card">
                 <div class="card-header">
                     <h2>欢迎使用简历智能助手</h2>
                 </div>
-                <p>通过本系统，您可以快速创建专业、精美的个人简历。</p>
-                <p>系统集成了通义千问大模型，能够帮助您优化简历内容，提供多种精美模板供您选择。</p>
+                <p>通过本产品，您可以快速创建专业、精美的个人简历。</p>
+                <p>本产品集成了通义千问大模型，能够帮助您优化简历文案，提供多种精美模板供您选择。</p>
+                <p style="color: red">当前产品属于推广阶段，VIP功能免费开放。</p>
+                <p>待推广阶段结束，已经注册且每日登录用户免费升级为VIP，不满足条件的用户需购买VIP。</p>
                 <div class="btn-group">
                   <a href="/resume" class="btn btn-success">开始创建简历</a>
                 </div>
@@ -59,7 +89,7 @@ router.get('/', (req, res) => {
                     <div class="feature-card">
                         <div class="feature-icon">✨</div>
                         <h3>内容优化</h3>
-                        <p>利用通义千问大模型优化简历内容，提升表达效果，突出个人优势和成就</p>
+                        <p>利用通义千问大模型优化简历文案，提升表达效果，突出个人优势和成就</p>
                     </div>
                     
                     <div class="feature-card">
@@ -100,7 +130,7 @@ router.get('/', (req, res) => {
                     <div class="workflow-step">
                         <div class="step-number">4</div>
                         <h3>智能优化内容</h3>
-                        <p>使用AI优化简历内容，提升表达效果</p>
+                        <p>使用AI优化简历文案，提升表达效果</p>
                     </div>
                     
                     <div class="workflow-step">
@@ -119,27 +149,6 @@ router.get('/', (req, res) => {
         </div>
 
         <div class="empty"></div>
-
-        <!-- 广告投放对接 -->
-        <div class="ad_bottom_left"></div>
-        <div class="ad_bottom_right"></div>
-        
-
-        <script type="text/javascript">
-          (window.slotbydup = window.slotbydup || []).push({
-            id: "u6341556",
-            container: "ad_bottom_left",
-            async: true
-          });
-          (window.slotbydup = window.slotbydup || []).push({
-            id: "u6341556",
-            container: "ad_bottom_right",
-            async: true
-          });
-        </script>
-        <script type="text/javascript" src="https://fpvideo.shenshiads.com/h5tovue/bd/wap.js" async="async" defer="defer" >
-        </script>
-
 
         <style>
             .logo-container {
@@ -165,7 +174,7 @@ router.get('/', (req, res) => {
             
             .hero-card {
                 text-align: center;
-                padding: 50px 40px;
+                padding: 30px 20px;
             }
             
             .hero-card .card-header {
@@ -180,7 +189,7 @@ router.get('/', (req, res) => {
             .hero-card p {
                 font-size: 18px;
                 color: #666;
-                max-width: 600px;
+                max-width: 60%;
                 margin: 0 auto 20px;
                 line-height: 1.6;
             }
@@ -310,30 +319,30 @@ router.get('/', (req, res) => {
                     grid-template-columns: 1fr;
                 }
             }
-            /* 广告容器悬浮样式 */
-            .ad_bottom_left {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                z-index: 9999;
-                transform: scale(0.4);
-                transform-origin: bottom left;
-            }
-
-            .ad_bottom_right {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                z-index: 9999;
-                transform: scale(0.4);
-                transform-origin: bottom right;
-            }
+            
             .empty {
                 min-height: 200px;
             }
         </style>
+        <script>
+            // 成为会员链接点击事件
+            document.addEventListener('click', function(e) {
+                if (e.target.id === 'becomeVipLink') {
+                    e.preventDefault();
+                    document.getElementById('paymentModal').style.display = 'block';
+                }
+                
+                // 取消支付按钮点击事件
+                if (e.target.id === 'cancelPayment') {
+                    document.getElementById('paymentModal').style.display = 'none';
+                }
+                
+                // 确认支付按钮点击事件
+                if (e.target.id === 'confirmPayment') {
+                    document.getElementById('paymentModal').style.display = 'none';
+                }
+            });
+        </script>
     </body>
     </html>
   `);
@@ -388,7 +397,6 @@ router.get('/preview/:generatedId', (req, res) => {
                 </div>
                 <nav class="nav-links">
                     <a href="/" class="nav-link">首页</a>
-                    <a href="/resume" class="nav-link">创建简历</a>
                 </nav>
             </div>
         </header>

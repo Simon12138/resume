@@ -4,6 +4,7 @@
     "username": "simon.hm",
     "phone": "18321301764",
     "password": "$2b$10$U0xCmemJTIFRnrR7edIFkOLFnlTInwboTADhpw731gEdPyTpDiDPO",
+    "isVip": true,
     "createdAt": "2025-07-31T11:03:01.173Z"
   },
   {
@@ -11,7 +12,7 @@
     "username": "echo",
     "phone": "18721034009",
     "password": "$2b$10$.c914Zw4tA3Rh5.OTl/iz.cstfrk4u2C6eAwTvH.ZnZUBGkF/M.qG",
-    "isVip": false,
+    "isVip": true,
     "createdAt": "2025-08-01T04:17:57.765Z"
   }
 ]

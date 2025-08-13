@@ -43,18 +43,6 @@ const findUserByUsername = async (username) => {
 };
 
 /**
- * 检查用户是否为VIP
- */
-const isUserVip = async (username) => {
-  try {
-    const user = await findUserByUsername(username);
-    return user ? user.isVip === true : false;
-  } catch (error) {
-    throw new Error('检查用户VIP状态时出错');
-  }
-};
-
-/**
  * 创建新用户
  */
 const createUser = async (userData) => {
@@ -80,6 +68,7 @@ const createUser = async (userData) => {
       phone: userData.phone,
       password: hashedPassword,
       isVip: false, // 默认都是非VIP用户
+      downloadCount: 3, // 默认下载次数为5次
       createdAt: new Date().toISOString()
     };
     
@@ -116,11 +105,22 @@ const validateUser = async (username, password) => {
   }
 };
 
+/**
+ * 写入所有用户数据
+ */
+const _writeUsers = async (users) => {
+  try {
+    await fs.writeFile(usersFilePath, JSON.stringify(users, null, 2));
+  } catch (error) {
+    throw new Error('无法写入用户数据');
+  }
+};
+
 module.exports = {
   getAllUsers,
   findUser,
   findUserByUsername,
-  isUserVip,
   createUser,
-  validateUser
+  validateUser,
+  _writeUsers
 };
