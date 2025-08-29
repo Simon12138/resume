@@ -14,6 +14,8 @@ router.get('/', (req, res) => {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="基于Node.js和通义千问大模型的简历智能助手，帮助用户快速创建高质量的简历。系统提供用户信息输入、AI优化、模板选择、智能填充、预览和下载等功能">
+        <meta name="keywords" content="通义千问、简历智能助手、简历生成、简历优化、简历模板、简历预览、简历下载、简历制作、面试、求职">
         <title>简历智能助手</title>
         <link rel="stylesheet" href="/css/style.css">
         <style>
@@ -38,7 +40,7 @@ router.get('/', (req, res) => {
                             联系邮箱：599082380@qq.com
                         </div>
                     </div>
-                    ${isLoggedIn && !user.isVIP ? '<a href="#" class="nav-link" id="becomeVipLink">成为会员</a>' : ''}
+                    ${isLoggedIn && user.isVIP !== true ? '<a href="#" class="nav-link" id="becomeVipLink">成为会员</a>' : ''}
                     ${isLoggedIn ? 
                       `<span class="user-info">欢迎, ${user.username} | <a href="/logout" class="nav-link">登出</a></span>` : 
                       `<a href="/login" class="nav-link">登录</a>
@@ -51,8 +53,8 @@ router.get('/', (req, res) => {
         <div id="paymentModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 10000;">
             <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 8px; padding: 20px; width: 500px; max-width: 90%; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); text-align: center;">
                 <h3 style="margin-top: 0; color: #333;">成为会员</h3>
-                <p style="line-height: 1.6; color: #666;">您还不是会员，请扫码下方小红书账号二维码，关注后私信成为会员</p>
-                <p style="line-height: 1.6; color: #666; margin-bottom: 20px;">非会员仅享受3次下载文件机会，关注后私信，可享受5次，成为会员即可无限制下载</p>
+                <p style="line-height: 1.6; color: #666;">您还不是会员，请扫码下方小红书账号二维码（账号：495380418 黄小鸭），关注后私信成为会员</p>
+                <p style="line-height: 1.6; color: #666; margin-bottom: 20px;">非会员仅享受3次下载文件机会，关注后私信成为会员即可无限制下载</p>
                 <div style="padding: 10px; display: flex; justify-content: center; align-items: center;">
                     <img src="/data/account.JPG" alt="账号二维码" style="max-width: 100%; height: auto; max-height: 400px; object-fit: contain;">
                 </div>
@@ -70,8 +72,7 @@ router.get('/', (req, res) => {
                 </div>
                 <p>通过本产品，您可以快速创建专业、精美的个人简历。</p>
                 <p>本产品集成了通义千问大模型，能够帮助您优化简历文案，提供多种精美模板供您选择。</p>
-                <p style="color: red">当前产品属于推广阶段，VIP功能免费开放。</p>
-                <p>待推广阶段结束，已经注册且每日登录用户免费升级为VIP，不满足条件的用户需购买VIP。</p>
+                <p style="color: red">当前产品属于推广阶段，VIP充值仅需9.9/年，原价19.8/年。</p>
                 <div class="btn-group">
                   <a href="/resume" class="btn btn-success">开始创建简历</a>
                 </div>
@@ -146,6 +147,10 @@ router.get('/', (req, res) => {
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="footer">
+            <p><a href="http://beian.miit.gov.cn/" target="_blank">沪ICP备2025138415号-1</a></p>
         </div>
 
         <div class="empty"></div>
@@ -318,11 +323,124 @@ router.get('/', (req, res) => {
                 .features-grid {
                     grid-template-columns: 1fr;
                 }
+                
+                .hero-card p {
+                    max-width: 100%;
+                    font-size: 16px;
+                }
+                
+                .section-title {
+                    font-size: 24px;
+                    margin: 30px 0 20px;
+                }
+                
+                .header-content {
+                    flex-direction: column;
+                    gap: 10px;
+                    height: auto;
+                    padding: 15px 0;
+                }
+                
+                .nav-links {
+                    width: 100%;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                }
+                
+                .logo-container {
+                    justify-content: center;
+                }
+                
+                .hero-card .card-header h2 {
+                    font-size: 28px;
+                }
+                
+                .card {
+                    padding: 20px 15px;
+                }
+                
+                .feature-card {
+                    padding: 20px 15px;
+                }
+                
+                .feature-icon {
+                    font-size: 36px;
+                    margin-bottom: 15px;
+                }
+                
+                .feature-card h3 {
+                    font-size: 18px;
+                }
+                
+                .workflow-section {
+                    margin: 40px 0;
+                }
+                
+                .hero-card {
+                    padding: 20px 15px;
+                }
+            }
+            
+            @media (max-width: 480px) {
+                .nav-links {
+                    flex-direction: column;
+                    gap: 10px;
+                }
+                
+                .hero-card .card-header h2 {
+                    font-size: 24px;
+                }
+                
+                .btn {
+                    width: 100%;
+                    padding: 12px;
+                }
+                
+                .btn-group {
+                    flex-direction: column;
+                    align-items: center;
+                }
+                
+                .section-title {
+                    font-size: 22px;
+                }
+                
+                .feature-card {
+                    padding: 15px;
+                }
+                
+                .workflow-section {
+                    margin: 30px 0;
+                }
+                
+                .step-number {
+                    width: 50px;
+                    height: 50px;
+                    font-size: 20px;
+                }
             }
             
             .empty {
                 min-height: 200px;
             }
+            .footer {
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            color: #888;
+            font-size: 14px;
+          }
+          
+          .footer a {
+            color: #888;
+            text-decoration: none;
+          }
+          
+          .footer a:hover {
+            text-decoration: underline;
+          }
+        
         </style>
         <script>
             // 成为会员链接点击事件

@@ -30,7 +30,8 @@ class QwenService {
 1. 提取姓名、联系方式、教育背景、工作经历、技能专长、项目经验等信息
 2. 工作经历和教育背景如果有多个，请以数组形式组织
 3. 保持信息的准确性，不要添加未提及的内容
-5. 严格按照以下JSON格式输出，不要包含任何其他内容（json中的showContent字段对应的值是将json中其他内容转换成markdown的格式给到用户查看的内容）：
+4. 严格按照以下JSON格式输出，不要包含任何其他内容，并保证JSON格式语法的准确性
+5. 请保证输出信息的完整性
 
 {
   "name": "张三",
@@ -119,8 +120,10 @@ class QwenService {
       "description": "独立设计并开发了企业内部使用的协作工具，整合了任务管理、文档共享和即时通讯功能，提高了团队协作效率。"
     }
   ],
-  "languages": "普通话（母语），英语（熟练，CET-6）",
-  "showContent": "xxxx"
+  "languages": [{
+    "language": "英文",
+    "proficiency": "熟练"
+  }]
 }
 
 需要解析的简历文本：
@@ -209,6 +212,8 @@ ${userDescription}
       });
 
       const responseText = completion.choices[0].message.content;
+
+      console.log('解析简历文本结果:', responseText);
       
       // 提取JSON部分
       const jsonStart = responseText.indexOf('{');
@@ -227,7 +232,7 @@ ${userDescription}
   }
 
   /**
-   * 优化简历内容
+   * 优化简历文案
    * @param {string} content - 需要优化的内容
    * @param {string} context - 上下文信息
    * @returns {Promise<string>} 优化后的内容

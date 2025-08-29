@@ -15,6 +15,8 @@ router.get('/', (req, res) => {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="基于Node.js和通义千问大模型的简历智能助手，帮助用户快速创建高质量的简历。系统提供用户信息输入、AI优化、模板选择、智能填充、预览和下载等功能">
+        <meta name="keywords" content="通义千问、简历智能助手、简历生成、简历优化、简历模板、简历预览、简历下载、简历制作、面试、求职">
         <title>创建简历 - 简历智能助手</title>
         <link rel="stylesheet" href="/css/style.css">
         <style>
@@ -634,8 +636,148 @@ router.get('/', (req, res) => {
               min-height: 200px;
           }
           
+          .footer {
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            color: #888;
+            font-size: 14px;
+          }
+          
+          .footer a {
+            color: #888;
+            text-decoration: none;
+          }
+          
+          .footer a:hover {
+            text-decoration: underline;
+          }
+          
           .contact-container:hover .contact-tooltip {
             display: block !important;
+          }
+          
+          @media (max-width: 768px) {
+            .resume-builder-container {
+              flex-direction: column;
+              height: auto;
+              padding: 10px;
+            }
+            
+            .templates-panel {
+              max-width: 100%;
+              height: auto;
+              margin-bottom: 20px;
+              padding: 15px;
+            }
+            
+            .content-panel {
+              height: auto;
+              padding: 15px;
+            }
+            
+            .input-section {
+              max-height: none;
+              min-height: 300px;
+              padding: 15px;
+            }
+            
+            #rawText {
+              height: 200px;
+              padding: 12px;
+            }
+            
+            .header-content {
+              flex-wrap: wrap;
+              gap: 10px;
+              height: auto;
+              padding: 15px 0;
+            }
+            
+            .nav-links {
+              width: 100%;
+              justify-content: center;
+              margin-top: 10px;
+              flex-wrap: wrap;
+            }
+            
+            .ai-template-section {
+              padding: 20px;
+            }
+            
+            .preview-content iframe {
+              min-height: 500px;
+            }
+            
+            .modal-content {
+              width: 95%;
+            }
+            
+            .generating-modal-content {
+              width: 95%;
+            }
+          }
+          
+          @media (max-width: 480px) {
+            .resume-builder-container {
+              padding: 5px;
+            }
+            
+            .content-panel, .templates-panel {
+              padding: 10px;
+            }
+            
+            .input-section, .result-section {
+              padding: 15px;
+            }
+            
+            #rawText {
+              height: 150px;
+              padding: 10px;
+              font-size: 16px;
+            }
+            
+            .btn {
+              width: 100%;
+              padding: 12px;
+              margin-bottom: 10px;
+            }
+            
+            .button-group {
+              flex-direction: column;
+            }
+            
+            .form-row {
+              flex-direction: column;
+              gap: 15px;
+            }
+            
+            .template-card {
+              padding: 10px;
+            }
+            
+            .template-info h3 {
+              font-size: 14px;
+            }
+            
+            .preview-content iframe {
+              min-height: 400px;
+            }
+            
+            .modal-content {
+              width: 98%;
+              padding: 10px;
+            }
+            
+            .generating-modal-content {
+              width: 98%;
+              padding: 20px 15px;
+            }
+            
+            .ai-template-section {
+              padding: 15px;
+            }
           }
         </style>
     </head>
@@ -665,8 +807,8 @@ router.get('/', (req, res) => {
         <div id="paymentModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 10000;">
             <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 8px; padding: 20px; width: 500px; max-width: 90%; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); text-align: center;">
                 <h3 style="margin-top: 0; color: #333;">成为会员</h3>
-                <p style="line-height: 1.6; color: #666;">您还不是会员，请扫码下方小红书账号二维码，关注后私信成为会员</p>
-                <p style="line-height: 1.6; color: #666; margin-bottom: 20px;">非会员仅享受3次下载文件机会，关注后私信，可享受5次，成为会员即可无限制下载</p>
+                <p style="line-height: 1.6; color: #666;">您还不是会员，请扫码下方小红书账号二维码（账号：495380418 黄小鸭），关注后私信成为会员</p>
+                <p style="line-height: 1.6; color: #666; margin-bottom: 20px;">非会员仅享受3次下载文件机会，关注后私信成为会员即可无限制下载</p>
                 <div style="padding: 10px; display: flex; justify-content: center; align-items: center;">
                     <img src="/data/account.JPG" alt="账号二维码" style="max-width: 100%; height: auto; max-height: 400px; object-fit: contain;">
                 </div>
@@ -766,6 +908,9 @@ router.get('/', (req, res) => {
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="footer">
+            <p><a href="http://beian.miit.gov.cn/" target="_blank">沪ICP备2025138415号-1</a></p>
         </div>
         <div class="empty"></div>
         
@@ -1310,7 +1455,7 @@ router.get('/', (req, res) => {
             }
             
             // 显示生成提示弹窗
-            generatingModal.style.display = 'flex';
+            generatingTemplateModal.style.display = 'flex';
             
             // 禁用生成按钮
             generateTemplateBtn.disabled = true;
@@ -1339,7 +1484,7 @@ router.get('/', (req, res) => {
               alert('生成模板过程中发生错误');
             } finally {
               // 隐藏生成提示弹窗
-              generatingModal.style.display = 'none';
+              generatingTemplateModal.style.display = 'none';
               generateTemplateBtn.disabled = false;
             }
           }
@@ -1410,7 +1555,7 @@ router.get('/', (req, res) => {
             const user = typeof currentUser !== 'undefined' ? currentUser : ${JSON.stringify(user)};
             
             // 检查用户下载次数（VIP用户不受限制）
-            if (user && !user.isVip && user.downloadCount <= 0) {
+            if (user && !user.isVIP && user.downloadCount <= 0) {
               alert('您的下载次数已用完，请升级为VIP用户以获得无限下载次数');
               return;
             }
@@ -1447,7 +1592,7 @@ router.get('/', (req, res) => {
                 window.URL.revokeObjectURL(url);
                 
                 // 更新用户下载次数（非VIP用户）
-                if (user && !user.isVip) {
+                if (user && !user.isVIP) {
                   try {
                     await fetch('/api/user/update-download-count', {
                       method: 'POST',
@@ -1508,7 +1653,7 @@ router.get('/', (req, res) => {
                 }
                 // 更新导航栏中的成为会员链接
                 const navLinks = document.querySelector('.nav-links');
-                if (navLinks && result.data && !result.data.isVip) {
+                if (navLinks && result.data && !result.data.isVIP) {
                   const becomeVipLink = document.createElement('a');
                   becomeVipLink.href = '#';
                   becomeVipLink.className = 'nav-link';
@@ -1518,6 +1663,16 @@ router.get('/', (req, res) => {
                 }
                 // 更新全局用户变量
                 window.currentUser = result.data;
+                // 更新会话中的用户信息
+                fetch('/api/update-session-user', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({ user: result.data })
+                }).catch(error => {
+                  console.error('更新会话用户信息失败:', error);
+                });
                 // 重新执行下载操作，但这次绕过登录检查
                 setTimeout(() => {
                   // 直接调用下载逻辑，跳过用户检查

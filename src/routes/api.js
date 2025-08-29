@@ -749,4 +749,32 @@ router.post('/user/update-download-count', async (req, res) => {
   }
 });
 
+// 更新会话中的用户信息
+router.post('/update-session-user', (req, res) => {
+  try {
+    const { user } = req.body;
+    
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: '用户信息是必填项'
+      });
+    }
+    
+    // 更新会话中的用户信息
+    req.session.user = user;
+    
+    res.json({
+      success: true,
+      message: '会话用户信息更新成功'
+    });
+  } catch (error) {
+    console.error('更新会话用户信息失败:', error);
+    res.status(500).json({
+      success: false,
+      message: '更新会话用户信息失败: ' + error.message
+    });
+  }
+});
+
 module.exports = router;

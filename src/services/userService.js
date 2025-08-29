@@ -67,7 +67,7 @@ const createUser = async (userData) => {
       username: userData.username,
       phone: userData.phone,
       password: hashedPassword,
-      isVip: false, // 默认都是非VIP用户
+      isVIP: false, // 默认都是非VIP用户
       downloadCount: 3, // 默认下载次数为5次
       createdAt: new Date().toISOString()
     };

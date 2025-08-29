@@ -22,7 +22,6 @@ router.get('/register', (req, res) => {
                 </div>
                 <nav class="nav-links">
                     <a href="/" class="nav-link">首页</a>
-                    <a href="/resume" class="nav-link">创建简历</a>
                 </nav>
             </div>
         </header>
@@ -128,7 +127,6 @@ router.get('/login', (req, res) => {
                 </div>
                 <nav class="nav-links">
                     <a href="/" class="nav-link">首页</a>
-                    <a href="/resume" class="nav-link">创建简历</a>
                 </nav>
             </div>
         </header>
@@ -176,6 +174,17 @@ router.get('/login', (req, res) => {
                     const result = await response.json();
                     
                     if (result.success) {
+                        // 更新会话中的用户信息
+                        await fetch('/api/update-session-user', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ user: result.data })
+                        }).catch(error => {
+                            console.error('更新会话用户信息失败:', error);
+                        });
+                        
                         window.location.href = '/resume';
                     } else {
                         alert(result.message || '登录失败');

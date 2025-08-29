@@ -398,6 +398,7 @@ textarea {
 @media (max-width: 768px) {
   .container {
     padding: 0 16px;
+    max-width: 100%;
   }
   
   .form-row {
@@ -421,14 +422,152 @@ textarea {
   
   .templates-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
   
   .card {
-    padding: 24px;
+    padding: 24px 20px;
+    margin-top: 16px;
   }
   
   .card-header h2 {
     font-size: 24px;
+  }
+  
+  .header-content {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 12px 0;
+  }
+  
+  .nav-links {
+    width: 100%;
+    justify-content: center;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  
+  input, textarea, select {
+    padding: 12px 14px;
+    font-size: 16px; /* 防止iOS缩放 */
+  }
+  
+  .btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+  }
+  
+  .preview-title {
+    font-size: 22px;
+    text-align: center;
+  }
+  
+  .resume-frame {
+    height: 600px;
+  }
+  
+  .template-card:hover {
+    transform: none; /* 移动端禁用悬停效果 */
+  }
+  
+  .card:hover {
+    transform: none; /* 移动端禁用悬停效果 */
+  }
+  
+  .table th, .table td {
+    padding: 12px 10px;
+    font-size: 14px;
+  }
+  
+  .features {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .features p {
+    padding: 15px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 16px;
+  }
+  
+  .container {
+    padding: 0 12px;
+  }
+  
+  .header-content {
+    padding: 10px 0;
+  }
+  
+  .logo {
+    font-size: 24px;
+  }
+  
+  h1 {
+    font-size: 20px;
+  }
+  
+  .nav-link {
+    font-size: 14px;
+    padding: 6px 10px;
+    margin: 4px;
+  }
+  
+  .card-header h2 {
+    font-size: 22px;
+  }
+  
+  .templates-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .template-preview {
+    height: 200px;
+  }
+  
+  .template-info {
+    padding: 15px;
+  }
+  
+  label {
+    font-size: 15px;
+  }
+  
+  .btn-group {
+    gap: 10px;
+  }
+  
+  .preview-header {
+    padding: 16px;
+  }
+  
+  .preview-title {
+    font-size: 20px;
+  }
+  
+  .resume-frame {
+    height: 500px;
+  }
+  
+  .alert {
+    padding: 15px;
+    font-size: 14px;
+  }
+  
+  .table th, .table td {
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+  
+  .features p {
+    padding: 12px;
+    font-size: 14px;
   }
 }
 

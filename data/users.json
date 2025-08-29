@@ -4,7 +4,7 @@
     "username": "simon.hm",
     "phone": "18321301764",
     "password": "$2b$10$U0xCmemJTIFRnrR7edIFkOLFnlTInwboTADhpw731gEdPyTpDiDPO",
-    "isVip": true,
+    "isVIP": true,
     "createdAt": "2025-07-31T11:03:01.173Z"
   },
   {
@@ -12,7 +12,16 @@
     "username": "echo",
     "phone": "18721034009",
     "password": "$2b$10$.c914Zw4tA3Rh5.OTl/iz.cstfrk4u2C6eAwTvH.ZnZUBGkF/M.qG",
-    "isVip": true,
+    "isVIP": true,
     "createdAt": "2025-08-01T04:17:57.765Z"
+  },
+  {
+    "id": "1755671239646",
+    "username": "simon12138",
+    "phone": "18321301765",
+    "password": "$2b$10$KCUUy4e9I/k9/Wp.SLAkqOYjobDs8nkPOaVv2hbB3N3sDNNEPNOnC",
+    "isVIP": false,
+    "downloadCount": 3,
+    "createdAt": "2025-08-20T06:27:19.646Z"
   }
 ]
